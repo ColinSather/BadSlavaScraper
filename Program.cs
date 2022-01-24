@@ -6,7 +6,7 @@ using System;
 
 // scraper section
 var scraper = new SlavaScraper();
-List<string> locations = scraper.GetLocations();
+List<string> locations = scraper.ScrapeUSLinks();
 string csv = scraper.ScrapeAllEvents(locations);
 
 // csv headers
@@ -14,8 +14,8 @@ string csv = scraper.ScrapeAllEvents(locations);
 
 // csv formating section
 var fmtr = new CsvFormatter();
+fmtr.WriteData("database/csv/output.csv", csv);
 //fmtr.ReadData("raw.csv");
-fmtr.WriteData("output.csv", csv);
 
 /*
 // TEST EVENT SCRAPER BY A SINGLE CITY
@@ -32,34 +32,24 @@ class SlavaScraper {
     //private string baseUrl = "http://localhost/";
     private HtmlWeb web = new HtmlWeb();
  
-    public List<string> GetLocations() {
+    public List<string> ScrapeUSLinks() {
         // gets all the US city urls from badslava homepage
         var doc = web.Load(baseUrl);
-        string us_xpath = "//body/div/div[3]/div[1]/div/div";
-        var node = doc.DocumentNode.SelectSingleNode(us_xpath);
-
-        List<string> locations = new List<string>();
-
-        foreach (var elem in node.ChildNodes) {
-            if (elem.Name != "#text" && elem.Name != "#comment") {
-                string state = elem.ChildNodes[1].InnerText;
-                
-                foreach (var li in elem.ChildNodes[3].ChildNodes) {
-                    if (li.ChildNodes.Count > 0) { 
-                        var tmpArr = li.InnerHtml.Split('"');
-                        locations.Add(tmpArr[1]);
-                    }
-                }
-            }
-        }
         
+        List<string> locations = new List<string>();
+        string us_xpath = "//body/div/div[3]/div[1]/div/div/div/h3/a";
+        var nodes = doc.DocumentNode.SelectNodes(us_xpath);
+        
+        foreach (var elem in nodes) {
+            string url = elem.Attributes[0].Value;
+            locations.Add(url);
+        }
+
         return locations;
     }
    
-    public string GetMicList(string urlParams) {
-        // get this week's open mic list
-        // param ex: open-mics.php?city=Laramie&state=WY&type=Comedy
-        string url = baseUrl + urlParams;
+    public string GetMicList(string url) {
+        // get this week's open mic list for a state or country
         string xpath = "//body/div[1]/div/div/table/tbody/tr";
 
         var doc = web.Load(url);
@@ -90,11 +80,11 @@ class SlavaScraper {
     }
 
     public string ScrapeAllEvents(List<string> locations) {
-        // Scrape all events from badslava.com and return as string
+        // Scrape all events from badslava.com and return csv string
         string csv = "";
 
-        foreach (string city in locations) {
-            csv += GetMicList(city);
+        foreach (string url in locations) {
+            csv += GetMicList(url);
             Console.WriteLine(csv);
  
             // TODO: ensure mic list d/n have null entries and is valid
@@ -106,17 +96,6 @@ class SlavaScraper {
 }
 
 class CsvFormatter {
-    public void WriteData(string outFile, string csv) {
-        if (!File.Exists(outFile))
-        {
-            // Create a file to write to.
-            using (StreamWriter sw = File.CreateText(outFile))
-            {
-                sw.Write(csv);
-            }
-        }
-    }
-
     public void ReadData(string csvPath)  {
         // Open the file to read from.
         using (StreamReader sr = File.OpenText(csvPath))
@@ -128,6 +107,17 @@ class CsvFormatter {
                 var lst = line.Split(",");
                 Console.WriteLine($"{ln} | {lst.Length}");
                 ln += 1;
+            }
+        }
+    }
+
+    public void WriteData(string outFile, string csv) {
+        if (!File.Exists(outFile))
+        {
+            // Create a file to write to.
+            using (StreamWriter sw = File.CreateText(outFile))
+            {
+                sw.Write(csv);
             }
         }
     }
