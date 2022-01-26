@@ -6,7 +6,7 @@ using System;
 
 // scraper section
 var scraper = new SlavaScraper();
-List<string> locations = scraper.ScrapeUSLinks();
+List<string> locations = scraper.ScrapeLinks();
 string csv = scraper.ScrapeAllEvents(locations);
 
 // csv headers
@@ -19,7 +19,7 @@ fmtr.WriteData("database/csv/output.csv", csv);
 
 /*
 // TEST EVENT SCRAPER BY A SINGLE CITY
-string url = "open-mics.php?city=Los%20Angeles&state=CA&type=Comedy";
+string url = "http://badslava.com/open-mics.php?city=Los%20Angeles&state=CA&type=Comedy";
 var micList = scraper.GetMicList(url);
 Console.WriteLine(micList);
 */
@@ -32,7 +32,7 @@ class SlavaScraper {
     //private string baseUrl = "http://localhost/";
     private HtmlWeb web = new HtmlWeb();
  
-    public List<string> ScrapeUSLinks() {
+    public List<string> ScrapeLinks() {
         // gets all the US city urls from badslava homepage
         var doc = web.Load(baseUrl);
         
@@ -66,9 +66,8 @@ class SlavaScraper {
             tr = tr.Replace("\n", "");
             tr = tr.Replace(",", "&#x2C;");
             tr = tr.Replace("</td>", ", ");
-            tr = tr.Remove(tr.Length - 1);
-
-            // TODO: Check if row is null before appending to csv 
+            tr = tr.Remove(tr.Length - 2);
+            
             if (tr != "") {
                 csv += font.InnerText.Split(" ")[1] + ", ";
                 csv += tr;
@@ -124,6 +123,6 @@ class CsvFormatter {
 }
 
 /*
-*   TODO: Find out why you cannot use the HtmlNodeCollection class directly (see link)
-*   https://docs.workflowgen.com/wfgmy/v320/html/c65cebec-e770-b732-08d1-b76f2406c1f6.htm
+*   TODO: Find out why you cannot use the HtmlNodeCollection class 
+*         directly (see link) https://docs.workflowgen.com/wfgmy/v320/html/c65cebec-e770-b732-08d1-b76f2406c1f6.htm
 */
