@@ -525,6 +525,9 @@ li {
 	border-radius: 5px;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
+    box-shadow: 0 1px 6px rgb(32 33 36 / 28%);
+    border-color: rgba(223,225,229,0);
+    margin-bottom: 10px;
 }
 
 .search input[type="text"]
@@ -552,7 +555,9 @@ li {
 	border-radius-bottom-right: 5px;
 	-moz-border-radius-bottom-right: 5px;
 	-webkit-border-radius-bottom-right: 5px;
-        cursor:pointer;
+    cursor:pointer;
+    -webkit-appearance: none;
+    color:#000;
 }
 
 /* ===========================
@@ -566,6 +571,7 @@ li {
 	{
 		width: 95%;
 		margin: 0 auto;
+        margin-bottom: 10px;
 	}
 
 }

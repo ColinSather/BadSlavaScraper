@@ -5,24 +5,22 @@ using System.IO;
 using System;
 
 // scraper section
+/*
 var scraper = new SlavaScraper();
 List<string> locations = scraper.ScrapeLinks();
 string csv = scraper.ScrapeAllEvents(locations);
-
-// csv headers
-// Date, Time, Name, Venue, Address, City, State, Map, Frequency, Cost, Info, Email, Link, Phone, Reviews,
+*/
 
 // csv formating section
+/*
 var fmtr = new CsvFormatter();
 fmtr.WriteData("database/csv/output.csv", csv);
-//fmtr.ReadData("raw.csv");
-
-/*
-// TEST EVENT SCRAPER BY A SINGLE CITY
-string url = "http://badslava.com/open-mics.php?city=Los%20Angeles&state=CA&type=Comedy";
-var micList = scraper.GetMicList(url);
-Console.WriteLine(micList);
+fmtr.ReadData("raw.csv");
 */
+
+// test mysql connection
+var sql = new MySqlCommands();
+sql.SelectTest();
 
 // <summary>
 // Handles all the badslava.com web scraping actions
