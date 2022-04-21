@@ -6,7 +6,7 @@ using System;
 
 // scraper section
 /*
-var scraper = new SlavaScraper();
+var scraper = new BadSlavaScraper();
 List<string> locations = scraper.ScrapeLinks();
 string csv = scraper.ScrapeAllEvents(locations);
 */
