@@ -2,7 +2,7 @@
 // <summary>
 // Handles all the badslava.com web scraping actions
 // </summary>
-class SlavaScraper {
+class BadSlavaScraper {
     private string baseUrl = "http://badslava.com/";
     //private string baseUrl = "http://localhost/";
     private HtmlWeb web = new HtmlWeb();
